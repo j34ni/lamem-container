@@ -1,0 +1,14 @@
+# Local benchmark outputs (VTK/pvd/logs) — not part of the repo
+bench/
+
+# Local scratch / test scripts
+*.sbatch
+job.sh
+job_2-nodes.sh
+
+# SLURM outputs & cores
+lamem-*.out
+lamem-*.err
+core
+core.*
+nohup.out

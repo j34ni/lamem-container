@@ -1,0 +1,17 @@
+# Build artifacts
+build.log
+*.tar
+*.sif
+
+# Build cache (avoid committing)
+/tmp/.buildx-cache*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# General
+*.swp
+*.swo
+*~

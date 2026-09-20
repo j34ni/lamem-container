@@ -1,0 +1,62 @@
+name: Build LaMEM container
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'start.sh'
+      - '.github/workflows/*'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'start.sh'
+      - '.github/workflows/*'
+  workflow_dispatch:  # Allow manual trigger
+permissions:
+  contents: read
+  packages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build (local)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: lamem:test
+      - name: Test LaMEM loads
+        run: |
+          docker run --rm lamem:test julia -e 'using LaMEM; println("LaMEM loaded OK")'
+      - name: Test LaMEM binary uses MPICH (not OpenMPI)
+        run: |
+          OUTPUT=$(docker run --rm lamem:test sh -c 'ldd $(find /root/.julia/artifacts -name "LaMEM" -path "*/bin/LaMEM" | head -1) | grep -i mpi')
+          echo "LaMEM binary linked against:"
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "libmpi.so.0 => /opt/conda/lib/libmpi.so.0"; then
+            echo "✅ Confirmed: MPICH 5.0.2rc2 (conda)"
+          else
+            echo "❌ ERROR: Not linked against MPICH"
+            exit 1
+          fi
+      - name: Login to GHCR
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push to GHCR
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/lamem:latest
