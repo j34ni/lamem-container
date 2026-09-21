@@ -8,6 +8,7 @@ authors:
     given-names: Jean
 license: MIT
 repository-code: "https://github.com/j34ni/lamem-container"
+doi: "10.5281/zenodo.22869618"
 license-url: "https://spdx.org/licenses/MIT.html"
 keywords:
   - geodynamics

@@ -1,5 +1,7 @@
 # LaMEM Container
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22869618.svg)](https://doi.org/10.5281/zenodo.22869618)
+
 Apptainer container for [LaMEM](https://github.com/UniMainzGeo/LaMEM) 3.1.0 — the Lithosphere and Mantle Evolution Model — with PETSc 3.25.5 on MPICH 5.0.2rc2 (conda build), on Ubuntu 24.04.
 
 This container provides a **LaMEM binary linked against conda MPICH** (not OpenMPI from Julia BinaryBuilder), making it suitable for HPC systems with modern interconnects.
@@ -123,6 +125,7 @@ If you use this container in your research, please cite:
   title = {LaMEM Container Environment},
   version = {0.1.0},
   year = {2026},
+  doi = {10.5281/zenodo.22869619},
   url = {https://github.com/j34ni/lamem-container},
 }
 ```
